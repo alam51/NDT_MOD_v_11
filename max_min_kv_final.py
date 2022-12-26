@@ -64,7 +64,6 @@ GROUP BY s.id
 ) AS T2 ON T1.id = T2.id AND T1.kV = T2.min_kV
 GROUP BY 1) AS T_min ON T_max.id = T_min.id
 ORDER BY base_kV DESC, NAME ASC
-
     """
 
     max_min_kv_df = pd.read_sql_query(max_zt_query_str, CONNECTOR)
@@ -75,5 +74,5 @@ ORDER BY base_kV DESC, NAME ASC
     return max_min_kv_df
 
 
-df = ss_max_min_voltage(from_datetime_str='2022-8-1 00:00', to_datetime_str='2022-8-31 23:00',
+df = ss_max_min_voltage(from_datetime_str='2022-10-1 00:00', to_datetime_str='2022-10-31 23:00',
                         excel_path='ss_max_min_kv.xlsx')
