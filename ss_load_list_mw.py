@@ -35,7 +35,8 @@ JOIN substation AS s ON se.substation_id = s.id
 WHERE se.is_transformer_low = 1
 AND (tt.id = 1 OR tt.id = 6 OR tt.id = 7 OR tt.id = 8)
 AND t.is_auxiliary = 0
-AND MW.date_time BETWEEN '2022-1-1 00:00' AND '2022-2-28 23:00' 
+AND MW.date_time BETWEEN '{from_datetime_str}' AND '{to_datetime_str}'
+{between_hour_str}
 
 GROUP BY MW.date_time, s.id
 ) AS T_tr
@@ -51,7 +52,8 @@ JOIN substation AS s ON se.substation_id = s.id
 -- JOIN zone AS z ON z.id = s.zone
 -- JOIN gmd ON gmd.id = s.gmd
 WHERE f.is_generation = 1
-AND MW.date_time BETWEEN '2022-1-1 00:00' AND '2022-2-28 23:00' 
+AND MW.date_time BETWEEN '{from_datetime_str}' AND '{to_datetime_str}' 
+{between_hour_str}
 
 GROUP BY MW.date_time, s.id
 ) AS T_gen
@@ -62,9 +64,10 @@ ON T_tr.id = T_gen.id AND T_tr.date_time = T_gen.date_time
 JOIN substation AS s ON s.id = T_ss_MW1.id
 JOIN zone AS z ON z.id = s.zone
 -- GROUP BY s.id
-ORDER BY 1, 3
+ORDER BY 2, 4, 5
 
 """
+
     max_min_kv_df = pd.read_sql_query(max_zt_query_str, CONNECTOR)
     max_min_kv_df1 = max_min_kv_df.set_index('id')
     # max_min_kv_df1.to_excel(excel_path)
