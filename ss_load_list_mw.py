@@ -20,7 +20,7 @@ def max_ss_load_mw(from_datetime_str, to_datetime_str, excel_path=r'max_ss_load_
 
     max_zt_query_str = f"""
 
-SELECT z.id AS z_id, z.name AS z_name, s.name, T_ss_MW1.* FROM 
+SELECT z.id AS z_id, z.name AS z_name, s.name, s.id as ss_id, T_ss_MW1.* FROM 
 (
 SELECT T_tr.id, T_tr.date_time, tr_MW+IFNULL(T_gen.gen_MW,0) AS ss_MW
 FROM
@@ -69,7 +69,7 @@ ORDER BY 2, 4, 5
 """
 
     max_min_kv_df = pd.read_sql_query(max_zt_query_str, CONNECTOR)
-    max_min_kv_df1 = max_min_kv_df.set_index('id')
+    max_min_kv_df1 = max_min_kv_df.set_index(['date_time', 'id'])
     # max_min_kv_df1.to_excel(excel_path)
     print(f'time elapsed = {datetime.datetime.now() - t1}')
     # print(f'Excel written in {excel_path}')
@@ -77,9 +77,9 @@ ORDER BY 2, 4, 5
     return max_min_kv_df1
 
 
-df = max_ss_load_mw(from_datetime_str='2022-5-1 00:00', to_datetime_str='2022-8-30 23:00',
+df = max_ss_load_mw(from_datetime_str='2022-7-1 00:00', to_datetime_str='2022-7-1 3:00',
                     # from_hour1=8, to_hour1=12,
                     excel_path='max_ss_load_mw_12.xlsx')
 a = 5
-df.to_excel('max_ss_load_mw56.xlsx')
+df.to_csv('max_ss_load_mw_2.csv')
 a = 5
