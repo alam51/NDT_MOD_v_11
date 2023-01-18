@@ -24,8 +24,8 @@ df1 = pd.pivot_table(df, index=df.index, columns='fuel', values='total_gen_Mkwh'
 df2 = df1.fillna(0)
 sum_col = df2.apply(np.sum, axis=1)
 df2.loc[:, 'Total_Gen'] = sum_col
-# df2.iloc[:, :-1].plot.area()
-# plt.show()
+df2.iloc[:, :-1].plot.area()
+plt.show()
 
 year_list = [i.year for i in df2.index]
 df2.loc[:, 'year'] = year_list
