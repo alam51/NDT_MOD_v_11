@@ -7,7 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def transformer_max_flow(from_datetime: str, to_datetime: str) -> pd.DataFrame:
+def transformer_max_flow(from_datetime: str | datetime.datetime, to_datetime: str | datetime.datetime) -> pd.DataFrame:
     _from_datetime = from_datetime
     _to_datetime = to_datetime
     query_str = f"""
@@ -55,4 +55,17 @@ def transformer_max_flow(from_datetime: str, to_datetime: str) -> pd.DataFrame:
     mva_rating_float = df.loc[:, 'mva_rating'].apply(lambda x: float(x.split('/')[-1]))
     df.loc[:, 'mva_rating_fl'] = mva_rating_float
     df.loc[:, '% loading'] = df.loc[:, 'max_mw'] / df.loc[:, 'mva_rating_fl']
-    return df
+    df1 = df.sort_values(by='% loading', ascending=False)
+    return df1
+
+
+program_execution_time_start = datetime.datetime.now()
+date_range = pd.date_range(start='2022-01-01', periods=12, freq='M')
+with pd.ExcelWriter('monthly_transformer_max.xlsx') as writer:
+    for i, date_time in enumerate(date_range[:-1]):
+        print(f'start = {date_time}')
+        print(f'end = {date_range[i + 1]}')
+        monthly_max_tr_df = transformer_max_flow(from_datetime=date_time, to_datetime=date_range[i + 1])
+        monthly_max_tr_df.to_excel(writer, sheet_name=date_time.strftime('%b_%y'))
+
+print(f'Time Elapsed: {(datetime.datetime.now() - program_execution_time_start) : .2f}')
