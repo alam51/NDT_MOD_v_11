@@ -107,7 +107,7 @@ ORDER BY T_v.base_kv DESC, T_mw_mvar.substation, T_mw_mvar.transformer
     return max_min_kv_df
 
 
-df = max_ss_load_mw(from_datetime_str='2022-11-1 00:00', to_datetime_str='2022-11-30 23:00',
+df = max_ss_load_mw(from_datetime_str='2022-12-1 00:00', to_datetime_str='2022-12-31 23:00',
                     # from_hour1=8, to_hour1=12,
                     excel_path='max_ss_load_mw_12.xlsx')
 a = 5
