@@ -3,9 +3,12 @@ from pandas import ExcelWriter
 from utils import LDD_CONNECTOR as CONNECTOR
 import pandas as pd
 import matplotlib.pyplot as plt
+import openpyxl
+from openpyxl import Workbook
 
-from_datetime = '2016-01-01 00:00'
-to_datetime = '2016-01-01 00:00'
+year = 2021
+from_datetime = f'{year}-01-01 00:00'
+to_datetime = f'{year}-12-31 23:00'
 
 query_str = f"""
 SELECT s.date_time, g.name AS `zone`, s.value AS zone_total
@@ -28,7 +31,11 @@ df_non_dhaka.insert(0, 'Dhaka', series_dhaka_sum)
 op_df = df_non_dhaka
 
 date_range = pd.date_range(start=from_datetime, end=to_datetime, freq='1M', inclusive='left')
-with ExcelWriter('zone_total_load_2021.xlsx') as writer:
+excel_output_file = f'zone_total_load_{year}.xlsx'
+# wb = Workbook()
+# ws = wb.active
+# wb.save(excel_output_file)
+with ExcelWriter(excel_output_file, engine='openpyxl') as writer:
     for i, date_time in enumerate(date_range):
         current_month_str = f'{date_time.year}-{date_time.month}'
         current_month_df = op_df.loc[current_month_str]

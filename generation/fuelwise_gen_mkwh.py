@@ -3,8 +3,8 @@ from pandas import ExcelWriter
 from utils import LDD_CONNECTOR as CONNECTOR
 import pandas as pd
 import matplotlib.pyplot as plt
-from_datetime = '2016-01-01 00:00'
-to_datetime = '2023-01-31 23:00'
+from_datetime = '2022-03-01 00:00'
+to_datetime = '2022-03-31 23:00'
 query_str = f"""
 SELECT kwh.date, f.name AS 'fuel', (SUM(kwh.value) / POW(10, 6)) AS total_gen_Mkwh
 FROM

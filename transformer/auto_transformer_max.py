@@ -7,7 +7,7 @@ import openpyxl
 t1 = datetime.datetime.now()
 
 
-def max_ss_load_mw(from_datetime_str, to_datetime_str, excel_path=r'max_ss_load_mw.xlsx', mw_thresh=350,
+def max_ss_load_mw(from_datetime_str, to_datetime_str, mw_thresh=350,
                    from_hour1=None,
                    to_hour1=None, from_hour2=None, to_hour2=None):
     if from_hour1:
@@ -107,9 +107,9 @@ ORDER BY T_v.base_kv DESC, T_mw_mvar.substation, T_mw_mvar.transformer
     return max_min_kv_df
 
 
-df = max_ss_load_mw(from_datetime_str='2022-12-1 00:00', to_datetime_str='2022-12-31 23:00',
-                    # from_hour1=8, to_hour1=12,
-                    excel_path='max_ss_load_mw_12.xlsx')
+df = max_ss_load_mw(from_datetime_str='2023-01-01 00:00', to_datetime_str='2023-01-31 23:00',
+                    # from_hour1=8, to_hour1=12
+                    )
 a = 5
-df.to_excel('auto_transformer_max_load.xlsx')
+df.to_excel(r'I:\My Drive\IMD\Monthly_Report\2023\1.January\auto_transformer_max_load.xlsx')
 a = 5
