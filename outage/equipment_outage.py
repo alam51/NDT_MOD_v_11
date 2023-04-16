@@ -2,8 +2,8 @@ import pandas as pd
 from utils import CONNECTOR
 import traceback
 
-from_datetime = '2022-12-01 00:00'
-to_datetime = '2022-12-31 23:00'
+from_datetime = '2022-02-01 00:00'
+to_datetime = '2022-02-28 23:00'
 query_str = f"""
 SELECT c.name AS 'circle', g.name AS 'gmd', z.name AS 'zone', s.name AS 'substation', se.id as 'eq_id', se.name AS 'equipment', se.is_bus, se.is_transformer, 
 se.is_line, e.event_info, e.date_time, e.is_trip, e.is_scheduled, e.is_forced, e.is_project_work,

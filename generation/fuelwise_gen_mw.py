@@ -3,8 +3,8 @@ import numpy as np
 from utils import LDD_CONNECTOR as CONNECTOR
 import pandas as pd
 
-from_datetime = '2022-02-01 00:00'
-to_datetime = '2022-04-30 23:00'
+from_datetime = '2023-03-15 00:00'
+to_datetime = '2023-04-09 13:00'
 query_str = f"""
 SELECT mw.date_time, g.grid_name, ps.fuel_id, f.name AS fuel_name, SUM(mw.value) as gen_mw
 FROM mega_watt AS mw

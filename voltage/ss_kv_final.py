@@ -76,5 +76,6 @@ ORDER BY base_kV DESC, NAME ASC
     return max_min_kv_df
 
 
-df = ss_max_min_voltage(from_datetime_str='2022-12-1 00:00', to_datetime_str='2022-12-1 00:00',
+df = ss_max_min_voltage(from_datetime_str='2023-1-1 00:00', to_datetime_str='2023-1-31 23:00',
                         excel_path='ss_max_min_kv.xlsx')
+df.to_excel('ss_max_min_kv.xlsx')
