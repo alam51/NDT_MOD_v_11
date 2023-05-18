@@ -60,7 +60,7 @@ def transformer_max_flow(from_datetime: str | datetime.datetime, to_datetime: st
 
 
 program_execution_time_start = datetime.datetime.now()
-date_range = pd.date_range(start='2022-01-01', periods=12, freq='M')
+date_range = pd.date_range(start='2023-01-01', periods=5, freq='M')
 with pd.ExcelWriter('monthly_transformer_max.xlsx') as writer:
     for i, date_time in enumerate(date_range[:-1]):
         print(f'start = {date_time}')
@@ -68,4 +68,4 @@ with pd.ExcelWriter('monthly_transformer_max.xlsx') as writer:
         monthly_max_tr_df = transformer_max_flow(from_datetime=date_time, to_datetime=date_range[i + 1])
         monthly_max_tr_df.to_excel(writer, sheet_name=date_time.strftime('%b_%y'))
 
-print(f'Time Elapsed: {(datetime.datetime.now() - program_execution_time_start) : .2f}')
+# print(f'Time Elapsed: {(datetime.datetime.now() - program_execution_time_start) : .2f}')
