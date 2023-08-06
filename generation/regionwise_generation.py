@@ -1,10 +1,10 @@
 import numpy as np
 
-from utils import LDD_CONNECTOR as CONNECTOR1
+from utils import LDD_CONNECTOR as CONNECTOR
 import pandas as pd
 
-from_datetime = '2023-05-01 00:00'
-to_datetime = '2023-05-30 23:00'
+from_datetime = '2023-04-01 00:00'
+to_datetime = '2023-04-30 23:00'
 query_str = f"""
 SELECT mw.date_time, g.grid_name, ps.fuel_id, f.name AS fuel_name, SUM(mw.value) as gen_mw
 FROM mega_watt AS mw
@@ -16,12 +16,11 @@ WHERE (mw.date_time BETWEEN '{from_datetime}' AND '{to_datetime}')
 GROUP BY mw.date_time, g.grid_name, ps.fuel_id
 """
 
-df = pd.read_sql_query(query_str, CONNECTOR1, index_col='date_time')
+df = pd.read_sql_query(query_str, CONNECTOR, index_col='date_time')
 # df1 = df.pivot(index=None, columns='fuel_name', values='gen_mw')
 df1 = pd.pivot_table(df, index=df.index, columns='fuel_name', values='gen_mw', aggfunc=np.sum)
 df2 = df1.fillna(0)
 sum_col = df2.apply(np.sum, axis=1)
 df2.loc[:, 'Total_Gen'] = sum_col
 df2.to_excel('fuelwise_generation_mw.xlsx')
-df.to_excel('regionwise_generation_mw.xlsx')
 a = 4
