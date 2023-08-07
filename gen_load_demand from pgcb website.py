@@ -30,7 +30,7 @@ def reformat_df(_df: pd.DataFrame) -> pd.DataFrame:
 combined_df = pd.DataFrame()
 
 time_start = datetime.datetime.now()
-for i in range(1, 1480):
+for i in range(1483, 1580):
     try:
         print(i)
         url = f'https://erp.pgcb.gov.bd/web/generations/view_generations_bn?page={i}'
@@ -39,7 +39,7 @@ for i in range(1, 1480):
         combined_df = pd.concat([combined_df, formatted_df])
     except KeyError as e:
         traceback.print_exc()
-        continue
+        break
     # finally:
 a = 4
 
