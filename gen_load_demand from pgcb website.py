@@ -43,6 +43,6 @@ for i in range(1, 1480):
     # finally:
 a = 4
 
-combined_df.to_csv('gld.csv')
+combined_df.to_csv('gen_demand_loadshed.csv')
 print(f'Time taken= f{datetime.datetime.now() - time_start}')
-combined_df.to_excel('gld.xlsx')
+# combined_df.to_excel('gen_demand_loadshed.xlsx')
