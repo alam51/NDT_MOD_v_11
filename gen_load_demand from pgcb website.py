@@ -43,6 +43,15 @@ for i in range(1, 1480):
     # finally:
 a = 4
 
-combined_df.to_csv('gen_demand_loadshed.csv')
-print(f'Time taken= f{datetime.datetime.now() - time_start}')
+hourly_data_file_path = 'hourly_gen_demand_loadshed.csv'
+combined_df.to_csv(hourly_data_file_path)
+
+df = pd.read_csv(hourly_data_file_path, index_col=0, parse_dates=True)
+df.loc[:, 'year'] = df.index.year
+df.loc[:, 'month'] = df.index.month
+df1 = df.groupby(['year', 'month']).sum()
+df1.to_excel('monthly_total_Fuel_wise_gen_dem_LS_MWh.xlsx')
+a = 4
+
+print(f'Time taken= {datetime.datetime.now() - time_start}')
 # combined_df.to_excel('gen_demand_loadshed.xlsx')
