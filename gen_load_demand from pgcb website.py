@@ -30,16 +30,19 @@ def reformat_df(_df: pd.DataFrame) -> pd.DataFrame:
 combined_df = pd.DataFrame()
 
 time_start = datetime.datetime.now()
-for i in range(1483, 1580):
+for i in range(1, 5000):
     try:
         print(i)
         url = f'https://erp.pgcb.gov.bd/web/generations/view_generations_bn?page={i}'
         raw_df = pd.read_html(url)[0]
+        if raw_df.empty:
+            print("***Completed reading all pages***")
+            break
         formatted_df = reformat_df(raw_df)
         combined_df = pd.concat([combined_df, formatted_df])
     except KeyError as e:
         traceback.print_exc()
-        break
+        continue
     # finally:
 a = 4
 
