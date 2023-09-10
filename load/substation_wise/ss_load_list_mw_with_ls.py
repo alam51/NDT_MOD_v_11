@@ -33,7 +33,7 @@ JOIN transformer AS t ON se.transformer_id = t.id
 JOIN transformer_type AS tt ON tt.id = t.type_id
 JOIN substation AS s ON se.substation_id = s.id
 WHERE se.is_transformer_low = 1
-and (s.id = 6 or s.id = 9 or s.id = 15)
+and (s.id = 8 or s.id = 25 or s.id = 16 or s.id = 26)
 AND (tt.id = 1 OR tt.id = 6 OR tt.id = 7 OR tt.id = 8)
 AND t.is_auxiliary = 0
 AND MW.date_time BETWEEN '{from_datetime_str}' AND '{to_datetime_str}'
@@ -69,8 +69,16 @@ ORDER BY 2, 4, 5
 
 """
 
+    loadshed_query_str = f"""
+select * from general_event as ge
+where is_loadshed = 1
+and ge.date_time between '{from_datetime_str}' and '{to_datetime_str}'
+-- and (s.id = 8 or s.id = 25 or s.id = 16 or s.id = 26)
+"""
+    loadshed_df = pd.read_sql_query(loadshed_query_str, CONNECTOR)
     max_min_kv_df = pd.read_sql_query(max_zt_query_str, CONNECTOR)
     max_min_kv_df1 = max_min_kv_df.set_index(['date_time', 'id'])
+    a = 4
     # max_min_kv_df1.to_excel(excel_path)
     print(f'time elapsed = {datetime.datetime.now() - t1}')
     # print(f'Excel written in {excel_path}')
@@ -78,9 +86,9 @@ ORDER BY 2, 4, 5
     return max_min_kv_df1
 
 
-df = max_ss_load_mw(from_datetime_str='2023-8-6 00:00', to_datetime_str='2023-8-16 3:00',
+df = max_ss_load_mw(from_datetime_str='2023-8-6 00:00', to_datetime_str='2023-8-6 3:00',
                     # from_hour1=8, to_hour1=12,
-                    excel_path='ss_load_mw_12.xlsx')
+                    excel_path='ss_load_mw_13.xlsx')
 a = 5
-df.to_csv('max_ss_load_mw_3.csv')
+df.to_csv('max_ss_load_mw_2.csv')
 a = 5

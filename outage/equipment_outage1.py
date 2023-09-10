@@ -49,7 +49,7 @@ df1.loc[:, 'duration'] = df1.loc[:, 'restoration_time'] - df1.loc[:, 'outage_tim
 df2 = df1[df1.outage_status_sum == 1]
 a = 5
 
-with pd.ExcelWriter('outage_summary.xlsx') as writer:
+with pd.ExcelWriter('outage_summary1.xlsx') as writer:
     df.to_excel(writer, sheet_name='raw')
     df2.to_excel(writer, sheet_name='processed')
 

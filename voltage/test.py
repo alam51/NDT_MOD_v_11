@@ -1,27 +1,28 @@
 import datetime
-
+import psycopg2
 import sqlalchemy
 
-from utils import CONNECTOR  # may be mysql.connector or django sql connector
+# from utils import CONNECTOR  # may be mysql.connector or django sql connector
 import mysql.connector
 import pandas as pd
 import openpyxl
 import re
 t1 = datetime.datetime.now()
 
-sqlalchemy_con_str = "mysql://root:pgcb1234@localhost/ois"
+sqlalchemy_con_str = "mysql+pymysql://root:pgcb1234@localhost/ois"
 
-# engine = sqlalchemy.create_engine(sqlalchemy_con_str, echo=True)
+engine = sqlalchemy.create_engine(sqlalchemy_con_str)
 
-# eq_voltage_query_str = f"""
-# select * from ois.equipment_voltage
-# """
-# eq_voltage_df = pd.read_sql_query(eq_voltage_query_str, CONNECTOR, index_col=['id'])
-# eq_voltage_df.loc[:, 'base_kv'] = eq_voltage_df.loc[:, 'name'].apply(lambda x: float(re.findall('[0-9]+', x)[0]))
-# eq_voltage_df1 = eq_voltage_df.drop(columns=['name'])
-#
-# eq_voltage_df1.to_sql('eq_voltage_float', con=sqlalchemy_con_str, if_exists='replace', index=True)
+eq_voltage_query_txt = sqlalchemy.text(f"""
+select * from ois.equipment_voltage
+""")
 
+with engine.begin() as conn:
+    eq_voltage_df = pd.read_sql(eq_voltage_query_txt, conn, index_col=['id'])
+    eq_voltage_df.loc[:, 'base_kv'] = (eq_voltage_df.loc[:, 'name'].
+                                       apply(lambda x: float(re.findall('[0-9]+', x)[0])))
+    eq_voltage_df1 = eq_voltage_df.drop(columns=['name'])
+eq_voltage_df1.to_sql('eq_voltage_float', con=engine, if_exists='replace', index=True)
 a = 5
 
 
@@ -85,7 +86,8 @@ ORDER BY base_kV DESC, NAME ASC
     """
 
     # max_min_kv_df = pd.read_sql_query(max_zt_query_str, CONNECTOR)
-    max_min_kv_df = pd.read_sql_query(max_zt_query_str, CONNECTOR)
+    with engine.begin() as conn1:
+        max_min_kv_df = pd.read_sql(sqlalchemy.text(max_zt_query_str), conn1)
     max_min_kv_df.to_excel(excel_path)
     print(f'time elapsed = {datetime.datetime.now() - t1}')
     print(f'Excel written in {excel_path}')
@@ -93,5 +95,5 @@ ORDER BY base_kV DESC, NAME ASC
     return max_min_kv_df
 
 
-df = ss_max_min_voltage(from_datetime_str='2023-07-01 00:00', to_datetime_str='2023-07-31 23:00',
-                        excel_path=r'H:\My Drive\IMD\Monthly_Report\2023\7.July\ss_max_min_kv.xlsx')
+df = ss_max_min_voltage(from_datetime_str='2023-05-01 00:00', to_datetime_str='2023-05-01 23:00',
+                        excel_path=r'H:\My Drive\IMD\Monthly_Report\2023\5.May\ss_max_min_kv.xlsx')
