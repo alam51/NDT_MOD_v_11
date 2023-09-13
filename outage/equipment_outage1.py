@@ -36,20 +36,88 @@ df = pd.read_sql_query(query_str, CONNECTOR, index_col=['date_time', 'eq_id'])
 for i, (date_time, eq_id) in enumerate(df.index):
     try:
         if df.loc[(date_time, eq_id), 'outage_status_sum'] == 1 and df.loc[df.index[i + 1], 'is_restored'] == 1 \
-                and df.index[i][1] == df.index[i+1][1]:
+                and df.index[i][1] == df.index[i + 1][1]:
             df.loc[(date_time, eq_id), 'restoration_time'] = df.index[i + 1][0]
     except IndexError:
         print(f'Error in:\n{df.loc[(date_time, eq_id), :]}')
         traceback.format_exc()
 
-
 a = 8
 df1 = df.reset_index(names=['outage_time', 'eq_id'])
 df1.loc[:, 'duration'] = df1.loc[:, 'restoration_time'] - df1.loc[:, 'outage_time']
+
 df2 = df1[df1.outage_status_sum == 1]
+# _df2 = df2.loc['circle', 'gmd', 'substation', 'equipment', ]
+"""*************************************Bus Part Start*************************************"""
+df_bus_raw = df2[df2['is_bus'] == 1]
+df_bus = df_bus_raw.loc[:, ['circle', 'substation', 'equipment', 'event_info', 'outage_time', 'restoration_time',
+                          'duration', 'mw_interruption', 'is_trip', 'is_forced', 'is_scheduled', 'is_project_work']]
+
+"""*************************************Transformer Part Start*************************************"""
+df_tr_raw = df2[df2['is_transformer'] == 1]
+
+df_tr = df_tr_raw.loc[:, ['circle', 'substation', 'equipment', 'event_info', 'outage_time', 'restoration_time',
+                          'duration', 'mw_interruption', 'is_trip', 'is_forced', 'is_scheduled', 'is_project_work',
+                          'tr_id']]
+_df_tr = df_tr.sort_values(by=['circle', 'substation', 'tr_id', 'outage_time'])
+_df_tr.loc[:, 'is_repeat'] = [False for i in range(len(_df_tr))]  # At beginning declare all rows as no repeat
+for i, idx in enumerate(_df_tr.index[:-2]):
+    current_tr_id = _df_tr.loc[idx, 'tr_id']
+    next_tr_id = _df_tr.loc[_df_tr.index[i + 1], 'tr_id']
+    current_outage_time = _df_tr.loc[idx, 'outage_time']
+    current_restoration_time = _df_tr.loc[idx, 'restoration_time']
+    next_outage_time = _df_tr.loc[_df_tr.index[i + 1], 'outage_time']
+    next_restoration_time = _df_tr.loc[_df_tr.index[i + 1], 'restoration_time']
+    current_time_in_next_time_range = ((next_outage_time <= current_outage_time <= next_restoration_time) or
+                                       (next_outage_time <= current_restoration_time <= next_restoration_time))
+    next_time_in_current_time_range = ((current_outage_time <= next_outage_time <= current_restoration_time) or
+                                       (current_outage_time <= next_restoration_time <= current_restoration_time))
+
+    if (not _df_tr.loc[idx, 'is_repeat']) and current_tr_id == next_tr_id and \
+            (current_time_in_next_time_range or next_time_in_current_time_range):
+        if _df_tr.loc[idx, 'mw_interruption'] < _df_tr.loc[_df_tr.index[i + 1], 'mw_interruption']:
+            _df_tr.loc[idx, 'is_repeat'] = True
+        else:
+            _df_tr.loc[_df_tr.index[i + 1], 'is_repeat'] = True
+
+# df_tr = _df_tr.query("(not 'is_repeat') and ('restoration_time' != pd.NaT)")
+df_tr = _df_tr[_df_tr.is_repeat == False].iloc[:, :-2]
+"""**********************************Transformer Part End*******************************"""
+
+"""*********************************Line Part Start*************************************"""
+df_line_raw = df2[df2['is_line'] == 1]
+
+df_line = df_line_raw.loc[:, ['circle', 'substation', 'equipment', 'event_info', 'outage_time', 'restoration_time',
+                          'duration', 'mw_interruption', 'is_trip', 'is_forced', 'is_scheduled', 'is_project_work',
+                          'tl_id']]
+_df_tl = df_line.sort_values(by=['tl_id', 'outage_time'])
+_df_tl.loc[:, 'is_repeat'] = [False for i in range(len(_df_tl))]  # At beginning declare all rows as no repeat
+for i, idx in enumerate(_df_tl.index[:-2]):
+    current_tl_id = _df_tl.loc[idx, 'tl_id']
+    next_tl_id = _df_tl.loc[_df_tl.index[i + 1], 'tl_id']
+    current_outage_time = _df_tl.loc[idx, 'outage_time']
+    current_restoration_time = _df_tl.loc[idx, 'restoration_time']
+    next_outage_time = _df_tl.loc[_df_tl.index[i + 1], 'outage_time']
+    next_restoration_time = _df_tl.loc[_df_tl.index[i + 1], 'restoration_time']
+    current_time_in_next_time_range = ((next_outage_time <= current_outage_time <= next_restoration_time) or
+                                       (next_outage_time <= current_restoration_time <= next_restoration_time))
+    next_time_in_current_time_range = ((current_outage_time <= next_outage_time <= current_restoration_time) or
+                                       (current_outage_time <= next_restoration_time <= current_restoration_time))
+
+    if (not _df_tl.loc[idx, 'is_repeat']) and current_tl_id == next_tl_id and \
+            (current_time_in_next_time_range or next_time_in_current_time_range):
+        if _df_tl.loc[idx, 'mw_interruption'] < _df_tl.loc[_df_tl.index[i + 1], 'mw_interruption']:
+            _df_tl.loc[idx, 'is_repeat'] = True
+        else:
+            _df_tl.loc[_df_tl.index[i + 1], 'is_repeat'] = True
+df_tl1 = _df_tl[_df_tl.is_repeat == False].iloc[:, :-2]
+df_tl = df_tl1.sort_values(by=['circle', 'substation', 'equipment', 'outage_time'])
 a = 5
+"""*********************************Line Part End*************************************"""
+
+_df_equipment = pd.concat([df_bus, df_tr])
+df_equipment = _df_equipment.sort_values(by=['circle', 'substation', 'equipment', 'outage_time'])
 
 with pd.ExcelWriter('outage_summary1.xlsx') as writer:
     df.to_excel(writer, sheet_name='raw')
     df2.to_excel(writer, sheet_name='processed')
-

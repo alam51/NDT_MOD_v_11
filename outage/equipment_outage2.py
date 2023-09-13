@@ -20,7 +20,7 @@ WHERE
 (e.date_time BETWEEN '{from_datetime}' AND '{to_datetime}')
 AND (se.is_line = 1 OR se.is_transformer = 1 OR se.is_bus = 1)
 GROUP BY se.id, e.date_time
-ORDER BY c.name, g.name, s.name, e.date_time, se.id
+ORDER BY c.name, g.name, s.name, se.id, e.date_time
 """
 
 df = pd.read_sql_query(query_str, CONNECTOR, index_col=['date_time', 'eq_id'])
