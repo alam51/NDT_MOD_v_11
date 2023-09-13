@@ -47,18 +47,30 @@ df1 = df.reset_index(names=['outage_time', 'eq_id'])
 df1.loc[:, 'duration'] = df1.loc[:, 'restoration_time'] - df1.loc[:, 'outage_time']
 
 df2 = df1[df1.outage_status_sum == 1]
+outage_type_series = [pd.NA for i in df2.index]
+df2.loc[:, 'outage_type'] = outage_type_series
+for _, i in enumerate(df2.index):
+    if df2.loc[i, 'is_trip'] == 1:
+        df2.loc['outage_type'] = 'T'
+    elif df2.loc[i, 'is_forced'] == 1:
+        df2.loc['outage_type'] = 'E/O'
+    elif df2.loc[i, 'is_scheduled'] == 1:
+        df2.loc[i, 'outage_type'] = 'S/O'
+    elif df2.loc[i, 'is_project_work'] == 1:
+        df2.loc['outage_type'] = 'D/W'
 # _df2 = df2.loc['circle', 'gmd', 'substation', 'equipment', ]
 """*************************************Bus Part Start*************************************"""
 df_bus_raw = df2[df2['is_bus'] == 1]
-df_bus = df_bus_raw.loc[:, ['circle', 'substation', 'equipment', 'event_info', 'outage_time', 'restoration_time',
-                          'duration', 'mw_interruption', 'is_trip', 'is_forced', 'is_scheduled', 'is_project_work']]
+df_bus = df_bus_raw.loc[:, ['circle', 'substation', 'equipment', 'outage_time', 'restoration_time',
+                          'duration', 'outage_type', 'event_info','mw_interruption', 'is_trip', 'is_forced',
+                            'is_scheduled', 'is_project_work']]
 
 """*************************************Transformer Part Start*************************************"""
 df_tr_raw = df2[df2['is_transformer'] == 1]
 
-df_tr = df_tr_raw.loc[:, ['circle', 'substation', 'equipment', 'event_info', 'outage_time', 'restoration_time',
-                          'duration', 'mw_interruption', 'is_trip', 'is_forced', 'is_scheduled', 'is_project_work',
-                          'tr_id']]
+df_tr = df_tr_raw.loc[:, ['circle', 'substation', 'equipment', 'outage_time', 'restoration_time',
+                          'duration', 'outage_type', 'event_info','mw_interruption', 'is_trip', 'is_forced',
+                            'is_scheduled', 'is_project_work', 'tr_id']]
 _df_tr = df_tr.sort_values(by=['circle', 'substation', 'tr_id', 'outage_time'])
 _df_tr.loc[:, 'is_repeat'] = [False for i in range(len(_df_tr))]  # At beginning declare all rows as no repeat
 for i, idx in enumerate(_df_tr.index[:-2]):
@@ -87,9 +99,9 @@ df_tr = _df_tr[_df_tr.is_repeat == False].iloc[:, :-2]
 """*********************************Line Part Start*************************************"""
 df_line_raw = df2[df2['is_line'] == 1]
 
-df_line = df_line_raw.loc[:, ['circle', 'substation', 'equipment', 'event_info', 'outage_time', 'restoration_time',
-                          'duration', 'mw_interruption', 'is_trip', 'is_forced', 'is_scheduled', 'is_project_work',
-                          'tl_id']]
+df_line = df_line_raw.loc[:, ['circle', 'substation', 'equipment', 'outage_time', 'restoration_time',
+                          'duration', 'outage_type', 'event_info','mw_interruption', 'is_trip', 'is_forced',
+                            'is_scheduled', 'is_project_work', 'tl_id']]
 _df_tl = df_line.sort_values(by=['tl_id', 'outage_time'])
 _df_tl.loc[:, 'is_repeat'] = [False for i in range(len(_df_tl))]  # At beginning declare all rows as no repeat
 for i, idx in enumerate(_df_tl.index[:-2]):
@@ -118,6 +130,16 @@ a = 5
 _df_equipment = pd.concat([df_bus, df_tr])
 df_equipment = _df_equipment.sort_values(by=['circle', 'substation', 'equipment', 'outage_time'])
 
+df_equipment_trip_emergency = df_equipment[(df_equipment['is_trip'] == 1) | (df_equipment['is_forced'] == 1)]
+df_equipment_scheduled_project = df_equipment[(df_equipment['is_scheduled'] == 1) | (df_equipment['is_project_work'] == 1)]
+
+df_line_trip_emergency = df_tl[(df_tl['is_trip'] == 1) | (df_tl['is_forced'] == 1)]
+df_line_scheduled_project = df_tl[(df_tl['is_scheduled'] == 1) | (df_tl['is_project_work'] == 1)]
+a = 5
+
 with pd.ExcelWriter('outage_summary1.xlsx') as writer:
-    df.to_excel(writer, sheet_name='raw')
-    df2.to_excel(writer, sheet_name='processed')
+    df2.to_excel(writer, sheet_name=f'outage_master_{from_datetime[:7]}')
+    df_equipment_trip_emergency.to_excel(writer, sheet_name='QF-LDC-23')
+    df_line_trip_emergency.to_excel(writer, sheet_name='QF-LDC-24')
+    df_equipment_scheduled_project.to_excel(writer, sheet_name='QF-LDC-25')
+    df_line_scheduled_project.to_excel(writer, sheet_name='QF-LDC-26')
