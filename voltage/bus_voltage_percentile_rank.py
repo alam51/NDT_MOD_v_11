@@ -3,7 +3,7 @@ import pandas as pd
 from utils import CONNECTOR
 
 from_date_str = '2023-1-1'
-to_date_str = '2023-9-13'
+to_date_str = '2023-9-14'
 query_str = f"""
 SELECT s.name as 'substation', se.substation_id AS 'ss_id', se.name as 'equipment', se.id AS 'eq_id', 
 v.value AS 'voltage', ev.name AS 'base_kv', v.date_time
@@ -21,7 +21,8 @@ df = pd.read_sql(sql=query_str, con=CONNECTOR)
 df['base_kv_float'] = df['base_kv'].apply(lambda x: float(x.split(' ')[0]))
 df['voltage_pu'] = df['voltage'] / df['base_kv_float']
 
-quantile_array = np.arange(start=0.05, stop=1.0+.05, step=.05)
+_quantile_array = np.arange(start=0.05, stop=1.0, step=.05)
+quantile_array = np.concatenate([[0.02], _quantile_array, [.98]])
 
 df_400kV = df[df['base_kv_float'] == 400.0]
 df_pivoted_400_pu = pd.pivot_table(data=df_400kV, index=['date_time'],
@@ -59,9 +60,9 @@ df_132kV_quantile = df_pivoted_132.quantile(quantile_array, method='single', num
 a = 5
 
 with pd.ExcelWriter('bus_voltage_percentile_rank.xlsx') as writer:
-    df_400kV_pu_quantile.to_excel(writer, sheet_name='400kV_pu')
-    df_230kV_pu_quantile.to_excel(writer, sheet_name='230kV_pu')
-    df_132kV_pu_quantile.to_excel(writer, sheet_name='132kV_pu')
     df_400kV_quantile.to_excel(writer, sheet_name='400kV_value')
     df_230kV_quantile.to_excel(writer, sheet_name='230kV_value')
     df_132kV_quantile.to_excel(writer, sheet_name='132kV_value')
+    df_400kV_pu_quantile.to_excel(writer, sheet_name='400kV_pu')
+    df_230kV_pu_quantile.to_excel(writer, sheet_name='230kV_pu')
+    df_132kV_pu_quantile.to_excel(writer, sheet_name='132kV_pu')
