@@ -51,13 +51,13 @@ outage_type_series = [pd.NA for i in df2.index]
 df2.loc[:, 'outage_type'] = outage_type_series
 for _, i in enumerate(df2.index):
     if df2.loc[i, 'is_trip'] == 1:
-        df2.loc['outage_type'] = 'T'
+        df2.loc[i, 'outage_type'] = 'T'
     elif df2.loc[i, 'is_forced'] == 1:
-        df2.loc['outage_type'] = 'E/O'
+        df2.loc[i, 'outage_type'] = 'E/O'
     elif df2.loc[i, 'is_scheduled'] == 1:
         df2.loc[i, 'outage_type'] = 'S/O'
     elif df2.loc[i, 'is_project_work'] == 1:
-        df2.loc['outage_type'] = 'D/W'
+        df2.loc[i, 'outage_type'] = 'D/W'
 # _df2 = df2.loc['circle', 'gmd', 'substation', 'equipment', ]
 """*************************************Bus Part Start*************************************"""
 df_bus_raw = df2[df2['is_bus'] == 1]
