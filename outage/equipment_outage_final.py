@@ -2,8 +2,9 @@ import pandas as pd
 from utils import CONNECTOR
 import traceback
 
-from_datetime = '2023-07-01 00:00'
-to_datetime = '2023-07-31 23:00'
+from_datetime = '2023-08-01 00:00'
+to_datetime = '2023-08-31 23:00'
+
 query_str = f"""
 SELECT T1.*, tr.id AS tr_id, l.id AS l_id, tl.id AS tl_id FROM (
 SELECT c.name AS 'circle', g.name AS 'gmd', z.name AS 'zone', s.id AS ss_id, s.name AS 'substation', 

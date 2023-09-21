@@ -109,9 +109,9 @@ class EWIC:
         workbook.close()
 
 
-ewic = EWIC(start_date='2023-07-01', end_date='2023-07-31 23:00')
+ewic = EWIC(start_date='2023-08-01', end_date='2023-08-31 23:00')
 # ewic.write_to_excel(r'I:\My Drive\IMD\Monthly_Report\2023\2.February\EWIC\EWIC.xlsx')
-ewic.write_to_excel(r'H:\My Drive\IMD\Monthly_Report\2023\7.July\EWIC\EWIC.xlsx')
+ewic.write_to_excel(r'H:\My Drive\IMD\Monthly_Report\2023\8.August\EWIC\EWIC.xlsx')
 # df_ampere = ewic.df_ampere()
 # df_mw = ewic.df_mw()
 # df_reading = ewic.df_energy_reading
