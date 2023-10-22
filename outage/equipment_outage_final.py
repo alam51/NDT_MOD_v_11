@@ -1,9 +1,12 @@
+import colorsys
+
+import colorama
 import pandas as pd
 from utils import CONNECTOR
 import traceback
 
-from_datetime = '2023-08-01 00:00'
-to_datetime = '2023-08-31 23:00'
+from_datetime = '2023-09-01 00:00'
+to_datetime = '2023-09-30 23:00'
 
 query_str = f"""
 SELECT T1.*, tr.id AS tr_id, l.id AS l_id, tl.id AS tl_id FROM (
@@ -138,9 +141,12 @@ df_line_trip_emergency = df_tl[(df_tl['is_trip'] == 1) | (df_tl['is_forced'] == 
 df_line_scheduled_project = df_tl[(df_tl['is_scheduled'] == 1) | (df_tl['is_project_work'] == 1)]
 a = 5
 
-with pd.ExcelWriter('outage_summary1.xlsx') as writer:
+op_file = r'H:\My Drive\IMD\Monthly_Report\2023\9.September\outage_summary1.xlsx'
+with pd.ExcelWriter(op_file) as writer:
     df2.to_excel(writer, sheet_name=f'outage_master_{from_datetime[:7]}')
     df_equipment_trip_emergency.to_excel(writer, sheet_name='QF-LDC-23')
     df_line_trip_emergency.to_excel(writer, sheet_name='QF-LDC-24')
     df_equipment_scheduled_project.to_excel(writer, sheet_name='QF-LDC-25')
     df_line_scheduled_project.to_excel(writer, sheet_name='QF-LDC-26')
+    print(colorama.Fore.GREEN + f'[+] Write Successful')
+    print(colorama.Fore.CYAN + f'file: {op_file}')

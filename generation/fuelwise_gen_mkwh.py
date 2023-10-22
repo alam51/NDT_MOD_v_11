@@ -4,7 +4,7 @@ from utils import LDD_CONNECTOR as CONNECTOR
 import pandas as pd
 import matplotlib.pyplot as plt
 from_date = '2021-01-01'
-to_date = '2023-08-31'
+to_date = '2023-09-30'
 
 query_str = f"""
 SELECT kwh.date, f.name AS 'fuel', (SUM(kwh.value) / POW(10, 6)) AS total_gen_Mkwh

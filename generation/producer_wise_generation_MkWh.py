@@ -3,8 +3,9 @@ from pandas import ExcelWriter
 from utils import LDD_CONNECTOR as CONNECTOR
 import pandas as pd
 import matplotlib.pyplot as plt
+
 from_date = '2021-01-01'
-to_date = '2023-08-31'
+to_date = '2023-09-30'
 
 query_str = f"""
 SELECT kwh.date, pr.name AS 'power_producer', (SUM(kwh.value) / POW(10, 6)) AS total_gen_Mkwh
@@ -27,6 +28,15 @@ sum_col = df2.apply(np.sum, axis=1)
 df2.loc[:, 'Total_Gen'] = sum_col
 df2.iloc[:, :-1].plot.area()
 plt.show()
+
+df2.loc[:, '_BPDB'] = df2.loc[:, 'PDB'] + df2.loc[:, 'SIPP, PDB']
+df2.loc[:, '_IPP'] = df2.loc[:, 'BPDB-RPCL'] + df2.loc[:, 'IPP']
+df2.loc[:, '_Gen_Coms'] = df2.loc[:, 'APSCL'] + df2.loc[:, 'EGCB'] + df2.loc[:, 'NWPGCL']
+df2.loc[:, '_REB'] = df2.loc[:, 'SIPP, REB']
+df2.loc[:, '_Rental'] = df2.loc[:, 'QRPP'] + df2.loc[:, 'RPP']
+df2.loc[:, '_HVDC'] = df2.loc[:, 'HVDC']
+df2.loc[:, '_Tripura'] = df2.loc[:, 'Import']
+
 
 month_list = [i.strftime('%Y-%m') for i in df2.index]
 df2.loc[:, 'month'] = month_list

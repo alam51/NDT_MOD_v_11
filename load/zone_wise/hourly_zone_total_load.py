@@ -8,8 +8,8 @@ import openpyxl
 
 t1 = datetime.datetime.now()
 
-from_datetime_str = '2022-01-01 00:00'
-to_datetime_str = '2022-12-31 23:00'
+from_datetime_str = '2023-09-16 00:00'
+to_datetime_str = '2023-09-16 23:00'
 folder_path = r'I:\My Drive\IMD\Analysis\Load\Zonewise'
 
 query = f"""
