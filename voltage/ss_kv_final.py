@@ -1,4 +1,6 @@
 import datetime
+import os.path
+
 from utils import CONNECTOR  # may be mysql.connector or django sql connector
 import mysql.connector
 import pandas as pd
@@ -7,7 +9,7 @@ import openpyxl
 t1 = datetime.datetime.now()
 
 
-def ss_max_min_voltage(from_datetime_str, to_datetime_str, excel_path=r'ss_max_min_kv.xlsx'):
+def ss_max_min_voltage(from_datetime_str: str, to_datetime_str: str, folder: str):
     max_zt_query_str = f"""
     SELECT T_max.*, T_min.kV, T_min.date_time FROM(
 SELECT T1.* FROM(
@@ -69,13 +71,13 @@ ORDER BY base_kV DESC, NAME ASC
     """
 
     max_min_kv_df = pd.read_sql_query(max_zt_query_str, CONNECTOR)
-    max_min_kv_df.to_excel(excel_path)
+    max_min_kv_df.to_excel(os.path.join(folder, 'ss_max_min_kV.xlsx'))
     print(f'time elapsed = {datetime.datetime.now() - t1}')
-    print(f'Excel written in {excel_path}')
-    """HTML Conversion"""
+    # print(f'Excel written in {excel_path}')
+    # """HTML Conversion"""
     return max_min_kv_df
-
-
-df = ss_max_min_voltage(from_datetime_str='2023-1-1 00:00', to_datetime_str='2023-1-31 23:00',
-                        excel_path='ss_max_min_kv.xlsx')
-df.to_excel('ss_max_min_kv.xlsx')
+#
+#
+# df = ss_max_min_voltage(from_datetime_str='2023-1-1 00:00', to_datetime_str='2023-1-31 23:00',
+#                         excel_path='ss_max_min_kv.xlsx')
+# df.to_excel('ss_max_min_kv.xlsx')
