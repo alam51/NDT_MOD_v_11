@@ -8,9 +8,9 @@ import openpyxl
 
 t1 = datetime.datetime.now()
 
-from_datetime_str = '2023-09-16 00:00'
-to_datetime_str = '2023-09-16 23:00'
-folder_path = r'I:\My Drive\IMD\Analysis\Load\Zonewise'
+from_datetime_str = '2023-01-01 00:00'
+to_datetime_str = '2023-04-30 23:00'
+folder_path = r'D:\New folder'
 
 query = f"""
 SELECT T_tr.date_time, T_tr.zone AS zone_id, z.name AS zone_name

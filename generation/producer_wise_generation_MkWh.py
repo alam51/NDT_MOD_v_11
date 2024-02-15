@@ -4,8 +4,8 @@ from utils import LDD_CONNECTOR as CONNECTOR
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from_date = '2021-01-01'
-to_date = '2023-09-30'
+from_date = '2023-01-01'
+to_date = '2023-12-31'
 
 query_str = f"""
 SELECT kwh.date, pr.name AS 'power_producer', (SUM(kwh.value) / POW(10, 6)) AS total_gen_Mkwh
@@ -46,7 +46,7 @@ year_list = [i.year for i in df2.index]
 df2.loc[:, 'year'] = year_list
 df_year = df2.groupby(by='year').sum()
 # writer =
-with ExcelWriter('power_producer_wise_generation_MkWh.xlsx') as writer:
+with ExcelWriter(r'G:\My Drive\IMD\Monthly_Report\2023\12.December\Gen\power_producer_wise_generation_MkWh.xlsx') as writer:
     df2.to_excel(writer, sheet_name='daily_gen_MkWh')
     df_month.to_excel(writer, sheet_name='monthly_gen_MkWh')
     df_year.to_excel(writer, sheet_name='yearly_gen_MkWh')

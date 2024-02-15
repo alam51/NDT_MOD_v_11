@@ -1,10 +1,12 @@
+import os.path
+
 from utils import LDD_CONNECTOR as CONNECTOR
 import pandas as pd
 from openpyxl import load_workbook
 
 
 class EWIC:
-    def __init__(self, start_date: str, end_date: str):
+    def __init__(self, start_date: str, end_date: str, folder: str):
         self.CONNECTOR = CONNECTOR
         self.start_date = start_date
         self.end_date = end_date
@@ -16,6 +18,7 @@ class EWIC:
                                                                      values='multiplication_factor').iloc[-1, :]
         self.df_energy_reading_formatted = self._df_energy_reading_formatted()
         self.df_ampere_mw_fomatted = self._df_ampere_mw_fomatted()
+        self.write_to_excel(os.path.join(folder, r'EWIC.xlsx'))
         self.a = 4
 
     def _df_ampere(self) -> pd.DataFrame:
@@ -109,9 +112,9 @@ class EWIC:
         workbook.close()
 
 
-ewic = EWIC(start_date='2023-09-01', end_date='2023-09-31 23:00')
+# ewic = EWIC(start_date='2023-12-01', end_date='2023-12-31 23:00')
 # ewic.write_to_excel(r'I:\My Drive\IMD\Monthly_Report\2023\2.February\EWIC\EWIC.xlsx')
-ewic.write_to_excel(r'H:\My Drive\IMD\Monthly_Report\2023\9.September\EWIC\EWIC.xlsx')
+# ewic.write_to_excel(r'G:\My Drive\IMD\Monthly_Report\2023\12.December\EWIC\EWIC.xlsx')
 # df_ampere = ewic.df_ampere()
 # df_mw = ewic.df_mw()
 # df_reading = ewic.df_energy_reading

@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 from utils import CONNECTOR
 
-from_date_str = '2023-1-1'
-to_date_str = '2023-9-14'
+from_date_str = '2023-7-1'
+to_date_str = '2023-07-31 23:00'
 query_str = f"""
 SELECT s.name as 'substation', se.substation_id AS 'ss_id', se.name as 'equipment', se.id AS 'eq_id', 
 v.value AS 'voltage', ev.name AS 'base_kv', v.date_time

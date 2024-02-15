@@ -119,8 +119,8 @@ ORDER BY 1, 3
     return max_min_kv_df1
 
 
-df = max_ss_load_mw(from_datetime_str='2023-9-1 00:00', to_datetime_str='2023-9-30 23:00',
+df = max_ss_load_mw(from_datetime_str='2023-12-1 00:00', to_datetime_str='2023-12-31 23:00',
                     # from_hour1=8, to_hour1=12,
                     excel_path=r'')
-df.to_excel(r'H:\My Drive\IMD\Monthly_Report\2023\9.September\max_ss_load_mw.xlsx')
+df.to_excel(r'G:\My Drive\IMD\Monthly_Report\2023\12.December\max_ss_load_mw.xlsx')
 a = 5
