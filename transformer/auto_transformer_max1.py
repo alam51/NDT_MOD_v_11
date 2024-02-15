@@ -66,9 +66,9 @@ ORDER BY T.voltage_level DESC, T.`substation`, T.`transformer`
     return df
 
 
-df = max_auto_transformer_load(from_datetime_str='2023-12-01 00:00', to_datetime_str='2023-12-31 23:00',
-                               # from_hour1=8, to_hour1=12
-                               )
-a = 5
-df.to_excel(r'G:\My Drive\IMD\Monthly_Report\2023\12.December\auto_transformer_max_load.xlsx')
+# df = max_auto_transformer_load(from_datetime_str='2023-12-01 00:00', to_datetime_str='2023-12-31 23:00',
+#                                # from_hour1=8, to_hour1=12
+#                                )
+# a = 5
+# df.to_excel(r'G:\My Drive\IMD\Monthly_Report\2023\12.December\auto_transformer_max_load.xlsx')
 a = 5

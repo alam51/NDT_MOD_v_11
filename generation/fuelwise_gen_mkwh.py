@@ -30,8 +30,8 @@ def fuelwise_gen_mkwh(from_date: str, to_date: str, folder_path: str) -> None:
     df2 = df1.fillna(0)
     sum_col = df2.apply(np.sum, axis=1)
     df2.loc[:, 'Total_Gen'] = sum_col
-    df2.iloc[:, :-1].plot.area()
-    plt.show()
+    # df2.iloc[:, :-1].plot.area()
+    # plt.show()
 
     month_list = [i.strftime('%Y-%m') for i in df2.index]
     df2.loc[:, 'month'] = month_list

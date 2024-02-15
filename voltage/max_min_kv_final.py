@@ -93,5 +93,5 @@ ORDER BY base_kV DESC, NAME ASC
     return max_min_kv_df
 
 
-df = ss_max_min_voltage(from_datetime_str='2023-12-01 00:00', to_datetime_str='2023-12-31 23:00',
-                        excel_path=r'G:\My Drive\IMD\Monthly_Report\2023\12.December\ss_max_min_kv.xlsx')
+# df = ss_max_min_voltage(from_datetime_str='2023-12-01 00:00', to_datetime_str='2023-12-31 23:00',
+#                         excel_path=r'G:\My Drive\IMD\Monthly_Report\2023\12.December\ss_max_min_kv.xlsx')
