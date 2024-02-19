@@ -18,7 +18,8 @@ print(colorama.Fore.YELLOW + '[*] Program Start')
 t_start = datetime.datetime.now()
 
 start_datetime = '2024-01-01 00:00'
-end_datetime = '2024-01-01 02:00'
+end_datetime = '2024-01-31 23:00'
+
 folder_roksana = r'G:\My Drive\IMD\Monthly_Report\2024\1_Jan\Roksana'
 folder_susama = r'G:\My Drive\IMD\Monthly_Report\2024\1_Jan\Susama'
 
